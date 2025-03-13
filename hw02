@@ -1,0 +1,55 @@
+import java.util.Scanner;
+import java.util.Stack;
+
+public class Calculator_02020 {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Stack<Integer> undoStack = new Stack<>();
+
+        while (true) {
+            System.out.println("Enter first number:");
+            int num1 = scanner.nextInt();
+            System.out.println("Enter second number:");
+            int num2 = scanner.nextInt();
+
+            System.out.println("Choose an operation: +, -, *, / or type 'undo' to revert last result:");
+            String operation = scanner.next();
+
+            if (operation.equals("undo")) {
+                if (!undoStack.isEmpty()) {
+                    int lastResult = undoStack.pop();
+                    System.out.println("Undo successful. Removed last result: " + lastResult);
+                } else {
+                    System.out.println("Nothing to undo.");
+                }
+                continue;
+            }
+
+            int result = 0;
+            boolean valid = true;
+
+            if (operation.equals("+")) {
+                result = num1 + num2;
+            } else if (operation.equals("-")) {
+                result = num1 - num2;
+            } else if (operation.equals("*")) {
+                result = num1 * num2;
+            } else if (operation.equals("/")) {
+                if (num2 != 0) {
+                    result = num1 / num2;
+                } else {
+                    System.out.println("Error: Division by zero.");
+                    valid = false;
+                }
+            } else {
+                System.out.println("Invalid operation.");
+                valid = false;
+            }
+
+            if (valid) {
+                System.out.println("Result: " + result);
+                undoStack.push(result); 
+            }
+        }
+    }
+}
