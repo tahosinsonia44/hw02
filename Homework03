@@ -1,0 +1,100 @@
+import java.util.*;
+public class calculatorApp {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Stack<Integer> undoStack = new Stack<>();
+        Map<String, Integer> savedResults = new HashMap<>();
+        boolean running = true;
+
+        while (running) {
+            System.out.println("Enter first number (or type 'load name' to use a saved result):");
+            String input1 = scanner.next();
+            int num1 = 0;
+            boolean validFirst = true;
+
+            if (input1.equals("load")) {
+                String key = scanner.next();
+                if (savedResults.containsKey(key)) {
+                    num1 = savedResults.get(key);
+                    System.out.println("Loaded " + key + ": " + num1);
+                } else {
+                    System.out.println("No saved result with name '" + key + "'. Try again.");
+                    validFirst = false;
+                }
+            } else {
+                num1 = Integer.parseInt(input1);
+            }
+
+            if (validFirst) {
+                System.out.println("Enter second number (or type 'load name' to use a saved result):");
+                String input2 = scanner.next();
+                int num2 = 0;
+                boolean validSecond = true;
+
+                if (input2.equals("load")) {
+                    String key = scanner.next();
+                    if (savedResults.containsKey(key)) {
+                        num2 = savedResults.get(key);
+                        System.out.println("Loaded " + key + ": " + num2);
+                    } else {
+                        System.out.println("No saved result with name '" + key + "'. Try again.");
+                        validSecond = false;
+                    }
+                } else {
+                    num2 = Integer.parseInt(input2);
+                }
+
+                if (validSecond) {
+                    System.out.println("Choose an operation: +, -, *, /, undo, save name, or exit:");
+                    String operation = scanner.next();
+
+                    if (operation.equals("undo")) {
+                        if (!undoStack.isEmpty()) {
+                            int lastResult = undoStack.pop();
+                            System.out.println("Undo successful. Removed last result: " + lastResult);
+                        } else {
+                            System.out.println("Nothing to undo.");
+                        }
+                    } else if (operation.equals("exit")) {
+                        System.out.println("Exiting calculator.");
+                        running = false;
+                    } else if (operation.equals("save")) {
+                        String name = scanner.next();
+                        if (!undoStack.isEmpty()) {
+                            savedResults.put(name, undoStack.peek());
+                            System.out.println("Saved current result as '" + name + "'");
+                        } else {
+                            System.out.println("No result to save.");
+                        }
+                    } else {
+                        int result = 0;
+                        boolean validOperation = true;
+
+                        if (operation.equals("+")) {
+                            result = num1 + num2;
+                        } else if (operation.equals("-")) {
+                            result = num1 - num2;
+                        } else if (operation.equals("*")) {
+                            result = num1 * num2;
+                        } else if (operation.equals("/")) {
+                            if (num2 != 0) {
+                                result = num1 / num2;
+                            } else {
+                                System.out.println("Error: Division by zero.");
+                                validOperation = false;
+                            }
+                        } else {
+                            System.out.println("Invalid operation.");
+                            validOperation = false;
+                        }
+
+                        if (validOperation) {
+                            System.out.println("Result: " + result);
+                            undoStack.push(result);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
